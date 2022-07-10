@@ -1,11 +1,23 @@
+global using Biklas_API_V2.Data;
+global using Microsoft.EntityFrameworkCore;
+global using Biklas_API_V2.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IEncriptador, Encriptador>();
+builder.Services.AddScoped<IComunicadorCorreo, ComunicadorCorreo>();
+builder.Services.AddScoped<ICalculadorRuta, CalculadorRuta>();
 
 var app = builder.Build();
 
