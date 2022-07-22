@@ -2,6 +2,7 @@
 {
     public class Segmento
     {
+        [Key]
         public int IdSegmento { get; set; }
         public int Posicion { get; set; }
         public int IdArista { get; set; }

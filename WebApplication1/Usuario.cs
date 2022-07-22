@@ -4,6 +4,11 @@
     {
         public const int ID_ROL_POR_DEFECTO = 1; // Administrador por defecto
 
+        public Usuario()
+        {
+        }
+
+        [Key]
         public int IdUsuario { get; set; }
         public string Nombre { get; set; }
         public string Contrasenia { get; set; }

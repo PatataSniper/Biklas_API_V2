@@ -2,6 +2,7 @@
 {
     public class Alerta
     {
+        [Key]
         public int IdAlerta { get; set; }
         public string Tipo { get; set; }
         public string Descripcion { get; set; }

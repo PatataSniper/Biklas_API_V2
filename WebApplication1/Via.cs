@@ -2,6 +2,7 @@
 {
     public class Via
     {
+        [Key]
         public int IdVia { get; set; }
         public string Nombre { get; set; }
 

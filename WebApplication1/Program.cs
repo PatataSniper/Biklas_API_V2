@@ -1,6 +1,7 @@
 global using Biklas_API_V2.Data;
 global using Microsoft.EntityFrameworkCore;
 global using Biklas_API_V2.Services;
+global using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 

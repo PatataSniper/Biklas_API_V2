@@ -2,6 +2,7 @@
 {
     public class Entidad
     {
+        [Key]
         public int IdEntidad { get; set; }
         public string Nombre { get; set; }
         public string NombreUI { get; set; }
