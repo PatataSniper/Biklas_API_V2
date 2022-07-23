@@ -27,26 +27,31 @@ namespace Biklas_API_V2.Data
             modelBuilder.Entity<Arista>()
                 .HasOne(a => a.VerticeInicial)
                 .WithMany(v => v.AristasIniciales)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(a => a.IdVerticeInicial);
 
             modelBuilder.Entity<Arista>()
                 .HasOne(a => a.VerticeFinal)
                 .WithMany(v => v.AristasFinales)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(a => a.IdVerticeFinal);
 
             modelBuilder.Entity<Arista>()
                 .HasOne(a => a.Via)
                 .WithMany(v => v.Aristas)
+                .OnDelete(DeleteBehavior.ClientCascade)
                 .HasForeignKey(a => a.IdVia);
 
             modelBuilder.Entity<UsuariosRelacion>()
                 .HasOne(r => r.Usuarios1)
                 .WithMany(u => u.UsuariosRelacion1)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(r => r.IdUsuario);
 
             modelBuilder.Entity<UsuariosRelacion>()
                 .HasOne(r => r.Usuarios2)
                 .WithMany(u => u.UsuariosRelacion2)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(r => r.IdUsuarioRelacionado);
 
             modelBuilder.Entity<AccionEntidad>()
@@ -67,6 +72,7 @@ namespace Biklas_API_V2.Data
             modelBuilder.Entity<Segmento>()
                 .HasOne(s => s.Arista)
                 .WithMany(a => a.Segmentos)
+                .OnDelete(DeleteBehavior.ClientCascade)
                 .HasForeignKey(s => s.IdArista);
 
             modelBuilder.Entity<Segmento>()

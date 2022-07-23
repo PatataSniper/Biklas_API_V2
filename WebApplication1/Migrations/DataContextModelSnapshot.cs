@@ -121,10 +121,10 @@ namespace Biklas_API_V2.Migrations
                     b.Property<bool>("Bidireccional")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IdVerticeFinal")
+                    b.Property<int?>("IdVerticeFinal")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdVerticeInicial")
+                    b.Property<int?>("IdVerticeInicial")
                         .HasColumnType("int");
 
                     b.Property<int>("IdVia")
@@ -202,16 +202,20 @@ namespace Biklas_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("PosicionFinX")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal?>("PosicionFinY")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal?>("PosicionInicioX")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal?>("PosicionInicioY")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<DateTimeOffset?>("TiempoFin")
                         .HasColumnType("datetimeoffset");
@@ -277,7 +281,8 @@ namespace Biklas_API_V2.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("KmRecorridos")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 2)
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -327,10 +332,12 @@ namespace Biklas_API_V2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVertice"), 1L, 1);
 
                     b.Property<decimal>("PosicionX")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("PosicionY")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.HasKey("IdVertice");
 
@@ -404,19 +411,17 @@ namespace Biklas_API_V2.Migrations
                     b.HasOne("Biklas_API_V2.Vertice", "VerticeFinal")
                         .WithMany("AristasFinales")
                         .HasForeignKey("IdVerticeFinal")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Biklas_API_V2.Vertice", "VerticeInicial")
                         .WithMany("AristasIniciales")
                         .HasForeignKey("IdVerticeInicial")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Biklas_API_V2.Via", "Via")
                         .WithMany("Aristas")
                         .HasForeignKey("IdVia")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("VerticeFinal");
@@ -431,7 +436,7 @@ namespace Biklas_API_V2.Migrations
                     b.HasOne("Biklas_API_V2.Arista", "Arista")
                         .WithMany("Segmentos")
                         .HasForeignKey("IdArista")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Biklas_API_V2.Ruta", "Ruta")
@@ -461,13 +466,13 @@ namespace Biklas_API_V2.Migrations
                     b.HasOne("Biklas_API_V2.Usuario", "Usuarios1")
                         .WithMany("UsuariosRelacion1")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Biklas_API_V2.Usuario", "Usuarios2")
                         .WithMany("UsuariosRelacion2")
                         .HasForeignKey("IdUsuarioRelacionado")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Usuarios1");

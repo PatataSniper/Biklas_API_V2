@@ -10,9 +10,9 @@ namespace Biklas_API_V2.Controllers
 
         public UsuariosController(DataContext context, IComunicadorCorreo comunicadorCorreo, IEncriptador encriptador)
         {
+            _context = context;
             _comunicadorCorreo = comunicadorCorreo;
             _encriptador = encriptador;
-            _context = context;
         }
 
         // GET api/<controller>

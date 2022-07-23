@@ -8,9 +8,17 @@ namespace Biklas_API_V2
         [Key]
         public int IdRuta { get; set; }
         public string Nombre { get; set; }
+
+        [Precision(9,6)]
         public Nullable<decimal> PosicionInicioX { get; set; }
+
+        [Precision(9, 6)]
         public Nullable<decimal> PosicionInicioY { get; set; }
+
+        [Precision(9, 6)]
         public Nullable<decimal> PosicionFinX { get; set; }
+
+        [Precision(9, 6)]
         public Nullable<decimal> PosicionFinY { get; set; }
         public Nullable<System.DateTimeOffset> TiempoInicio { get; set; }
         public Nullable<System.DateTimeOffset> TiempoFin { get; set; }

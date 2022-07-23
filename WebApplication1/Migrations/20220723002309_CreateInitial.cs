@@ -58,10 +58,10 @@ namespace Biklas_API_V2.Migrations
                     IdRuta = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PosicionInicioX = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PosicionInicioY = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PosicionFinX = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PosicionFinY = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PosicionInicioX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionInicioY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionFinX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionFinY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
                     TiempoInicio = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     TiempoFin = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
@@ -76,8 +76,8 @@ namespace Biklas_API_V2.Migrations
                 {
                     IdVertice = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PosicionX = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PosicionY = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    PosicionX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false),
+                    PosicionY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,7 +130,7 @@ namespace Biklas_API_V2.Migrations
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KmRecorridos = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    KmRecorridos = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
                     Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NombreUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -158,8 +158,8 @@ namespace Biklas_API_V2.Migrations
                     NumeroCarriles1 = table.Column<int>(type: "int", nullable: false),
                     NumeroCarriles2 = table.Column<int>(type: "int", nullable: true),
                     Bidireccional = table.Column<bool>(type: "bit", nullable: false),
-                    IdVerticeInicial = table.Column<int>(type: "int", nullable: false),
-                    IdVerticeFinal = table.Column<int>(type: "int", nullable: false),
+                    IdVerticeInicial = table.Column<int>(type: "int", nullable: true),
+                    IdVerticeFinal = table.Column<int>(type: "int", nullable: true),
                     IdVia = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -169,20 +169,17 @@ namespace Biklas_API_V2.Migrations
                         name: "FK_Aristas_Vertices_IdVerticeFinal",
                         column: x => x.IdVerticeFinal,
                         principalTable: "Vertices",
-                        principalColumn: "IdVertice",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdVertice");
                     table.ForeignKey(
                         name: "FK_Aristas_Vertices_IdVerticeInicial",
                         column: x => x.IdVerticeInicial,
                         principalTable: "Vertices",
-                        principalColumn: "IdVertice",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdVertice");
                     table.ForeignKey(
                         name: "FK_Aristas_Vias_IdVia",
                         column: x => x.IdVia,
                         principalTable: "Vias",
-                        principalColumn: "IdVia",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdVia");
                 });
 
             migrationBuilder.CreateTable(
@@ -226,14 +223,12 @@ namespace Biklas_API_V2.Migrations
                         name: "FK_UsuariosRelaciones_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdUsuario");
                     table.ForeignKey(
                         name: "FK_UsuariosRelaciones_Usuarios_IdUsuarioRelacionado",
                         column: x => x.IdUsuarioRelacionado,
                         principalTable: "Usuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
@@ -253,8 +248,7 @@ namespace Biklas_API_V2.Migrations
                         name: "FK_Segmentos_Aristas_IdArista",
                         column: x => x.IdArista,
                         principalTable: "Aristas",
-                        principalColumn: "IdArista",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdArista");
                     table.ForeignKey(
                         name: "FK_Segmentos_Rutas_IdRuta",
                         column: x => x.IdRuta,
