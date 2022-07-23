@@ -1,27 +1,39 @@
 ﻿using Itinero.LocalGeo;
-using System.Drawing;
 
 namespace Biklas_API_V2
 {
     public class Ruta
     {
+        public Ruta()
+        {
+            Segmentos = new List<Segmento>();
+        }
+        
         [Key]
         public int IdRuta { get; set; }
+
+        [MaxLength(50)]
         public string Nombre { get; set; }
 
         [Precision(9,6)]
-        public Nullable<decimal> PosicionInicioX { get; set; }
+        public decimal? PosicionInicioX { get; set; }
 
         [Precision(9, 6)]
-        public Nullable<decimal> PosicionInicioY { get; set; }
+        public decimal? PosicionInicioY { get; set; }
 
         [Precision(9, 6)]
-        public Nullable<decimal> PosicionFinX { get; set; }
+        public decimal? PosicionFinX { get; set; }
 
         [Precision(9, 6)]
-        public Nullable<decimal> PosicionFinY { get; set; }
-        public Nullable<System.DateTimeOffset> TiempoInicio { get; set; }
-        public Nullable<System.DateTimeOffset> TiempoFin { get; set; }
+        public decimal? PosicionFinY { get; set; }
+        
+        public DateTimeOffset? TiempoInicio { get; set; }
+        
+        public DateTimeOffset? TiempoFin { get; set; }
+
+        public int IdUsuario { get; set; }
+
+        public Usuario Usuario { get; set; }
 
         public virtual ICollection<Segmento> Segmentos { get; set; }
 

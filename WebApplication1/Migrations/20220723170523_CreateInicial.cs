@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Biklas_API_V2.Migrations
 {
-    public partial class CreateInitial : Migration
+    public partial class CreateInicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,32 +52,13 @@ namespace Biklas_API_V2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rutas",
-                columns: table => new
-                {
-                    IdRuta = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PosicionInicioX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
-                    PosicionInicioY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
-                    PosicionFinX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
-                    PosicionFinY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
-                    TiempoInicio = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    TiempoFin = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rutas", x => x.IdRuta);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Vertices",
                 columns: table => new
                 {
                     IdVertice = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PosicionX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false),
-                    PosicionY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false)
+                    PosicionX = table.Column<double>(type: "float(9)", precision: 9, scale: 6, nullable: false),
+                    PosicionY = table.Column<double>(type: "float(9)", precision: 9, scale: 6, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,7 +108,8 @@ namespace Biklas_API_V2.Migrations
                 name: "Usuarios",
                 columns: table => new
                 {
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     KmRecorridos = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
@@ -142,8 +124,8 @@ namespace Biklas_API_V2.Migrations
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.IdUsuario);
                     table.ForeignKey(
-                        name: "FK_Usuarios_Roles_IdUsuario",
-                        column: x => x.IdUsuario,
+                        name: "FK_Usuarios_Roles_IdRol",
+                        column: x => x.IdRol,
                         principalTable: "Roles",
                         principalColumn: "IdRol",
                         onDelete: ReferentialAction.Cascade);
@@ -203,6 +185,32 @@ namespace Biklas_API_V2.Migrations
                         column: x => x.RolesIdRol,
                         principalTable: "Roles",
                         principalColumn: "IdRol",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rutas",
+                columns: table => new
+                {
+                    IdRuta = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PosicionInicioX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionInicioY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionFinX = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    PosicionFinY = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: true),
+                    TiempoInicio = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    TiempoFin = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rutas", x => x.IdRuta);
+                    table.ForeignKey(
+                        name: "FK_Rutas_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -315,6 +323,11 @@ namespace Biklas_API_V2.Migrations
                 column: "IdVia");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rutas_IdUsuario",
+                table: "Rutas",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Segmentos_IdArista",
                 table: "Segmentos",
                 column: "IdArista");
@@ -323,6 +336,11 @@ namespace Biklas_API_V2.Migrations
                 name: "IX_Segmentos_IdRuta",
                 table: "Segmentos",
                 column: "IdRuta");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdRol",
+                table: "Usuarios",
+                column: "IdRol");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsuariosRelaciones_IdUsuario",
@@ -353,9 +371,6 @@ namespace Biklas_API_V2.Migrations
                 name: "Segmentos");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
-
-            migrationBuilder.DropTable(
                 name: "Acciones");
 
             migrationBuilder.DropTable(
@@ -368,13 +383,16 @@ namespace Biklas_API_V2.Migrations
                 name: "Rutas");
 
             migrationBuilder.DropTable(
-                name: "Roles");
-
-            migrationBuilder.DropTable(
                 name: "Vertices");
 
             migrationBuilder.DropTable(
                 name: "Vias");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

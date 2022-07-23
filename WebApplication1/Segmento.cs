@@ -2,6 +2,13 @@
 {
     public class Segmento
     {
+        public Segmento()
+        {
+            Alertas = new List<Alerta>();
+            Arista = new Arista();
+            Ruta = new Ruta();
+        }
+        
         [Key]
         public int IdSegmento { get; set; }
         public int Posicion { get; set; }

@@ -4,7 +4,11 @@
     {
         [Key]
         public int IdAlerta { get; set; }
+
+        [MaxLength(30)]
         public string Tipo { get; set; }
+
+        [MaxLength(250)]
         public string Descripcion { get; set; }
         public System.DateTimeOffset FechaHora { get; set; }
         public int IdSegmento { get; set; }

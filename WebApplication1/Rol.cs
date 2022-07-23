@@ -4,6 +4,8 @@
     {
         [Key]
         public int IdRol { get; set; }
+
+        [MaxLength(30)]
         public string Nombre { get; set; }
 
         public virtual ICollection<Usuario> Usuarios { get; set; }

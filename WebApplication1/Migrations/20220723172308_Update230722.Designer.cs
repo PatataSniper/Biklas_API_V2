@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biklas_API_V2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220723002309_CreateInitial")]
-    partial class CreateInitial
+    [Migration("20220723172308_Update230722")]
+    partial class Update230722
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -199,6 +199,9 @@ namespace Biklas_API_V2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRuta"), 1L, 1);
 
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,6 +229,8 @@ namespace Biklas_API_V2.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("IdRuta");
+
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Rutas");
                 });
@@ -259,19 +264,25 @@ namespace Biklas_API_V2.Migrations
             modelBuilder.Entity("Biklas_API_V2.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"), 1L, 1);
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Contrasenia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("CorreoElectronico")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("datetime2");
@@ -288,13 +299,17 @@ namespace Biklas_API_V2.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NombreUsuario")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IdUsuario");
+
+                    b.HasIndex("IdRol");
 
                     b.ToTable("Usuarios");
                 });
@@ -333,13 +348,13 @@ namespace Biklas_API_V2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVertice"), 1L, 1);
 
-                    b.Property<decimal>("PosicionX")
+                    b.Property<double>("PosicionX")
                         .HasPrecision(9, 6)
-                        .HasColumnType("decimal(9,6)");
+                        .HasColumnType("float(9)");
 
-                    b.Property<decimal>("PosicionY")
+                    b.Property<double>("PosicionY")
                         .HasPrecision(9, 6)
-                        .HasColumnType("decimal(9,6)");
+                        .HasColumnType("float(9)");
 
                     b.HasKey("IdVertice");
 
@@ -433,6 +448,17 @@ namespace Biklas_API_V2.Migrations
                     b.Navigation("Via");
                 });
 
+            modelBuilder.Entity("Biklas_API_V2.Ruta", b =>
+                {
+                    b.HasOne("Biklas_API_V2.Usuario", "Usuario")
+                        .WithMany("Rutas")
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Biklas_API_V2.Segmento", b =>
                 {
                     b.HasOne("Biklas_API_V2.Arista", "Arista")
@@ -456,7 +482,7 @@ namespace Biklas_API_V2.Migrations
                 {
                     b.HasOne("Biklas_API_V2.Rol", "Rol")
                         .WithMany("Usuarios")
-                        .HasForeignKey("IdUsuario")
+                        .HasForeignKey("IdRol")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -514,6 +540,8 @@ namespace Biklas_API_V2.Migrations
 
             modelBuilder.Entity("Biklas_API_V2.Usuario", b =>
                 {
+                    b.Navigation("Rutas");
+
                     b.Navigation("UsuariosRelacion1");
 
                     b.Navigation("UsuariosRelacion2");

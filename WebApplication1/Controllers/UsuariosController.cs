@@ -26,7 +26,7 @@ namespace Biklas_API_V2.Controllers
         /// <param name="idUsuario">El id del usuario que realiza la búsqueda</param>
         /// <param name="textoBusqueda">El texto de búsqueda de usuarios</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("api/usuarios/busqueda/{idUsuario}/{textoBusqueda}")]
         public async Task<ActionResult<IEnumerable<object>>> Get(int idUsuario, string? textoBusqueda = null)
         {
             // La búsqueda se estandariza a minúsculas
@@ -69,33 +69,40 @@ namespace Biklas_API_V2.Controllers
         }
 
         //GET api/<controller>/5
-        [HttpGet("{id}")]
+        [HttpGet("api/usuarios/{id}")]
         public async Task<ActionResult<object>> Get(int id)
         {
-            Usuario? usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
+            try
             {
-                return NotFound();
-            }
-
-            return Ok(new
-            {
-                usr = new
+                Usuario? usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null)
                 {
-                    usuario.IdUsuario,
-                    usuario.Nombre,
-                    usuario.Apellidos,
-                    usuario.NombreUsuario,
-                    usuario.Contrasenia,
-                    usuario.CorreoElectronico,
-                    usuario.IdRol
+                    throw new Exception("Usuario no encontrado en la base de datos");
                 }
-            });
+
+                return Ok(new
+                {
+                    usr = new
+                    {
+                        usuario.IdUsuario,
+                        usuario.Nombre,
+                        usuario.Apellidos,
+                        usuario.NombreUsuario,
+                        usuario.Contrasenia,
+                        usuario.CorreoElectronico,
+                        usuario.IdRol
+                    }
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { err = ex.Message });
+            }
         }
 
         // POST api/<controller>
-        [HttpPost]
-        public async Task<ActionResult> Post(Usuario nuevoUsuario)
+        [HttpPost("api/usuarios")]
+        public async Task<ActionResult> Post([FromBody]Usuario nuevoUsuario)
         {
             try
             {
@@ -109,18 +116,8 @@ namespace Biklas_API_V2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(new { err = ex.Message });
             }
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
 
         /// <summary>
@@ -130,7 +127,7 @@ namespace Biklas_API_V2.Controllers
         /// <param name="identificador">El identificador del usuario (nombre o correo electrónico)</param>
         /// <param name="contra">La contraseña del usuario</param>
         /// <returns>Información del usuario existente en la BD</returns>
-        [HttpPost]
+        [HttpPost("api/usuarios/login/{identificador}/{contra}")]
         public async Task<ActionResult<object>> IniciarSesion(string identificador, string contra)
         {
             try
@@ -173,7 +170,7 @@ namespace Biklas_API_V2.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("api/usuarios/recuperarcontrasenia/{correo}")]
         public async Task<ActionResult> RecuperarContrasenia(string correo)
         {
             try

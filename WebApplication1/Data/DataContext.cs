@@ -83,7 +83,12 @@ namespace Biklas_API_V2.Data
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Rol)
                 .WithMany(r => r.Usuarios)
-                .HasForeignKey(u => u.IdUsuario);
+                .HasForeignKey(u => u.IdRol);
+
+            modelBuilder.Entity<Ruta>()
+                .HasOne(r => r.Usuario)
+                .WithMany(u => u.Rutas)
+                .HasForeignKey(r => r.IdUsuario);
 
             modelBuilder.Entity<Rol>()
                 .HasMany(r => r.AccionEntidad)

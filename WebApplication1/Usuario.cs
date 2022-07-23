@@ -6,24 +6,39 @@
 
         public Usuario()
         {
+            UsuariosRelacion1 = new List<UsuariosRelacion>();
+            UsuariosRelacion2 = new List<UsuariosRelacion>();
+            Rutas = new List<Ruta>();
+            Rol = new Rol();
         }
 
         [Key]
         public int IdUsuario { get; set; }
+        
+        [MaxLength(50)]
         public string Nombre { get; set; }
+
+        [MaxLength(256)]
         public string Contrasenia { get; set; }
 
         [Precision(9, 2)]
         public decimal KmRecorridos { get; set; }
+
+        [MaxLength(100)]
         public string Apellidos { get; set; }
+
+        [MaxLength(50)]
         public string NombreUsuario { get; set; }
-        public System.DateTime FechaNacimiento { get; set; }
-        public System.DateTime FechaRegistro { get; set; }
+        public DateTime FechaNacimiento { get; set; }
+        public DateTime FechaRegistro { get; set; }
+        
+        [MaxLength(100)]
         public string CorreoElectronico { get; set; }
         public int IdRol { get; set; }
 
         public virtual ICollection<UsuariosRelacion> UsuariosRelacion1 { get; set; }
         public virtual ICollection<UsuariosRelacion> UsuariosRelacion2 { get; set; }
+        public virtual ICollection<Ruta> Rutas { get; set; }
         public virtual Rol Rol { get; set; }
 
         /// <summary>
@@ -37,7 +52,9 @@
         public bool ValidarContra(string contra, IEncriptador encriptador)
         {
             // Es necesario desencriptar la contraseña proveniente de la base de datos
-            return encriptador.Desencriptar(Contrasenia, encriptador.Llave) == contra;
+            //return encriptador.Desencriptar(Contrasenia, encriptador.Llave) == contra;
+
+            return Contrasenia == contra; // Temporal
         }
 
         /// <summary>
@@ -62,6 +79,7 @@
             // Asignamos identificadores válidos
             //IdUsuario = Usuarios.NuevoId(Db);
             IdRol = ID_ROL_POR_DEFECTO;
+            KmRecorridos = 0;
 
             NormalizarDatos(encriptador);
         }
@@ -75,7 +93,7 @@
         public void NormalizarDatos(IEncriptador encriptador)
         {
             // Encriptamos contraseña para su almacenamiento en BD
-            Contrasenia = encriptador.Encriptar(Contrasenia, encriptador.Llave);
+            //Contrasenia = encriptador.Encriptar(Contrasenia, encriptador.Llave);
         }
     }
 }
