@@ -4,6 +4,7 @@ using Biklas_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biklas_API_V2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220723172957_Update230722B")]
+    partial class Update230722B
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,16 +207,7 @@ namespace Biklas_API_V2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRuta"), 1L, 1);
 
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdVerticeFinal")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdVerticeInicial")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -222,13 +215,31 @@ namespace Biklas_API_V2.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<decimal?>("PosicionFinX")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("PosicionFinY")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("PosicionInicioX")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("PosicionInicioY")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<DateTimeOffset?>("TiempoFin")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("TiempoInicio")
+                        .HasColumnType("datetimeoffset");
+
                     b.HasKey("IdRuta");
 
                     b.HasIndex("IdUsuario");
-
-                    b.HasIndex("IdVerticeFinal");
-
-                    b.HasIndex("IdVerticeInicial");
 
                     b.ToTable("Rutas");
                 });
@@ -272,10 +283,10 @@ namespace Biklas_API_V2.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte[]>("ContraseniaH")
+                    b.Property<string>("Contrasenia")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varbinary(64)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("CorreoElectronico")
                         .IsRequired()
@@ -455,23 +466,7 @@ namespace Biklas_API_V2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biklas_API_V2.Vertice", "VerticeFinal")
-                        .WithMany("RutasFinales")
-                        .HasForeignKey("IdVerticeFinal")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("Biklas_API_V2.Vertice", "VerticeInicial")
-                        .WithMany("RutasIniciales")
-                        .HasForeignKey("IdVerticeInicial")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.Navigation("Usuario");
-
-                    b.Navigation("VerticeFinal");
-
-                    b.Navigation("VerticeInicial");
                 });
 
             modelBuilder.Entity("Biklas_API_V2.Segmento", b =>
@@ -567,10 +562,6 @@ namespace Biklas_API_V2.Migrations
                     b.Navigation("AristasFinales");
 
                     b.Navigation("AristasIniciales");
-
-                    b.Navigation("RutasFinales");
-
-                    b.Navigation("RutasIniciales");
                 });
 
             modelBuilder.Entity("Biklas_API_V2.Via", b =>

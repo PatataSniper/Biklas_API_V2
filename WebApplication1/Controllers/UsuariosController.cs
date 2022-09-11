@@ -26,15 +26,15 @@ namespace Biklas_API_V2.Controllers
         /// <param name="idUsuario">El id del usuario que realiza la búsqueda</param>
         /// <param name="textoBusqueda">El texto de búsqueda de usuarios</param>
         /// <returns></returns>
-        [HttpGet("api/usuarios/busqueda/{idUsuario}/{textoBusqueda}")]
-        public async Task<ActionResult<IEnumerable<object>>> Get(int idUsuario, string? textoBusqueda = null)
+        [HttpGet("api/usuarios/busqueda")]
+        public ActionResult<IEnumerable<object>> Get(int idUsuario, string? textoBusqueda = null)
         {
             // La búsqueda se estandariza a minúsculas
             textoBusqueda = textoBusqueda?.ToLower();
 
             // El usuario de búsqueda se excluye de los resultados...
-            IEnumerable<Usuario> usuarios = await _context.Usuarios
-                .Where(u => u.IdUsuario != idUsuario).ToListAsync();
+            IEnumerable<Usuario> usuarios = _context.Usuarios.Include(u => u.UsuariosRelacion1)
+                .Where(u => u.IdUsuario != idUsuario);
 
             if (!string.IsNullOrWhiteSpace(textoBusqueda))
             {
@@ -107,12 +107,25 @@ namespace Biklas_API_V2.Controllers
             try
             {
                 // Normalizamos información de creación de usuario
-                nuevoUsuario.NormalizarDatosCreacion(_encriptador);
+                nuevoUsuario.NormalizarDatosCreacion(_encriptador, _context);
                 _context.Usuarios.Add(nuevoUsuario);
 
                 // Iniciamos proceso de guardado en BD
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok(new
+                {
+                    user = new
+                    {
+                        nuevoUsuario.IdUsuario,
+                        nuevoUsuario.Nombre,
+                        nuevoUsuario.Apellidos,
+                        nuevoUsuario.NombreUsuario,
+                        nuevoUsuario.Contrasenia,
+                        nuevoUsuario.CorreoElectronico,
+                        nuevoUsuario.IdRol
+                    },
+                    auth_token = "1" // Token de prueba
+                });
             }
             catch (Exception ex)
             {
@@ -127,7 +140,7 @@ namespace Biklas_API_V2.Controllers
         /// <param name="identificador">El identificador del usuario (nombre o correo electrónico)</param>
         /// <param name="contra">La contraseña del usuario</param>
         /// <returns>Información del usuario existente en la BD</returns>
-        [HttpPost("api/usuarios/login/{identificador}/{contra}")]
+        [HttpGet("api/Usuarios/IniciarSesion")]
         public async Task<ActionResult<object>> IniciarSesion(string identificador, string contra)
         {
             try

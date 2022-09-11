@@ -14,39 +14,34 @@ namespace Biklas_API_V2.Controllers
             _calculadorRuta = calculadorRuta;
         }
 
-        [HttpGet("api/rutas/{idUsuario}")]
-        public async Task<ActionResult<object>> ObtenerRutasRelacionadas(int idUsuario)
+        [HttpGet("api/Rutas/ObtenerRutasRelacionadas")]
+        public ActionResult<object> ObtenerRutasRelacionadas(int idUsuario)
         {
             try
             {
-                // Obtenemos al usuario de la base de datos
-                Usuario? usr = await _context.Usuarios.FindAsync(idUsuario);
-
-                if (usr == null)
-                {
-                    throw new Exception("Usuario no existe en la base de datos");
-                }
-
                 // Devuelve las rutas relacionadas. Convertimos las rutas a objetos 
                 // anónimos para evitar ciclos infinitos. El nombre de las propiedades
                 // de los objetos anónimos deberán cuadrar con los nombres las propiedades
                 // declaradas en el cliente
-                return Ok(usr.Rutas.Select(r => new
+                IEnumerable<Ruta> rutas = _context.Rutas.Include(r => r.Segmentos).ThenInclude(s => s.Arista)
+                    .ThenInclude(a => a.VerticeInicial).Include(r => r.Segmentos).ThenInclude(s => s.Arista)
+                    .ThenInclude(a => a.VerticeFinal).Where(r => r.IdUsuario == idUsuario);
+                return Ok(rutas.Select(r => new
                 {
                     id = r.IdRuta,
                     nombre = r.Nombre,
                     distancia = "10 km",
-                    fechaCreacion = r.TiempoInicio.ToString(),
+                    fechaCreacion = r.FechaCreacion.ToString(),
                     coordenadas = r.Coordenadas()
                 }));
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("api/rutas/{xIni}/{yIni}/{xFin}/{yFin}")]
+        [HttpGet("api/Rutas/ObtenerRutaOptima")]
         public ActionResult<object> ObtenerRutaOptima(float xIni, float yIni, float xFin, float yFin)
         {
             Itinero.Route ruta = _calculadorRuta.CalcularRutaOptima(new Coordinate(xIni, yIni), new Coordinate(xFin, yFin));

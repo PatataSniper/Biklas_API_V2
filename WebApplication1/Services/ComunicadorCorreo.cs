@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using System.Text;
 
 namespace Biklas_API_V2.Services
 {
@@ -18,7 +19,7 @@ namespace Biklas_API_V2.Services
         {
             // Preparamos dirección, contraseña y contenido del correo
             string direcc = emailDest;
-            contraDest = _encriptador.Desencriptar(contraDest, _encriptador.Llave);
+            contraDest = _encriptador.Desencriptar(Encoding.ASCII.GetBytes(contraDest), _encriptador.Llave, _encriptador.IV);
             string contCorreo = PrepContRecuperaContra(contraDest);
 
             // Preparamos correo electrónico

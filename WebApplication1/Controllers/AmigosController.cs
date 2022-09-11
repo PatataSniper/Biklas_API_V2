@@ -12,13 +12,14 @@ namespace Biklas_API_V2.Controllers
         }
         
         // GET: ObtenerAmigosRelacionados
-        [HttpGet("api/Amigos/{idUsuario}")]
-        public async Task<ActionResult<IEnumerable<object>>> ObtenerAmigosRelacionados(int idUsuario)
+        [HttpGet("api/Amigos/ObtenerAmigosRelacionados")]
+        public ActionResult ObtenerAmigosRelacionados(int idUsuario)
         {
             try
             {
                 // Get the user from database
-                Usuario? usr = await _context.Usuarios.FindAsync(idUsuario);
+                Usuario? usr = _context.Usuarios.Include(u => u.UsuariosRelacion1).ThenInclude(rln => rln.Usuarios2)
+                    .FirstOrDefault(u => u.IdUsuario == idUsuario);
                 if (usr == null)
                 {
                     throw new Exception("Usuario no encontrado en la base de datos");
@@ -45,16 +46,16 @@ namespace Biklas_API_V2.Controllers
                     });
                 }
 
-                return Ok(listaAmigos);
+                return Ok(new { listaAmigos });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(new { err = ex.Message });
             }
         }
 
         [HttpDelete("api/Amigos/EliminarAmigo")]
-        public async Task<ActionResult> EliminarAmigo(UsuariosRelacion relacion)
+        public async Task<ActionResult> EliminarAmigo([FromBody]UsuariosRelacion relacion)
         {
             try
             {
@@ -72,7 +73,7 @@ namespace Biklas_API_V2.Controllers
                 _context.UsuariosRelaciones.RemoveRange(relaciones);
                 
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok(new { });
             }
             catch (Exception ex)
             {
@@ -81,7 +82,7 @@ namespace Biklas_API_V2.Controllers
         }
 
         [HttpPost("api/Amigos/AgregarAmigo")]
-        public async Task<ActionResult> AgregarAmigo(UsuariosRelacion relacion)
+        public async Task<ActionResult> AgregarAmigo([FromBody]UsuariosRelacion relacion)
         {
             try
             {
@@ -99,7 +100,7 @@ namespace Biklas_API_V2.Controllers
                 });
 
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok(new { });
             }
             catch (Exception ex)
             {

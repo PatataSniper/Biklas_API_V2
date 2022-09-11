@@ -1,15 +1,22 @@
-﻿namespace Biklas_API_V2
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
+namespace Biklas_API_V2
 {
     public class Usuario
     {
-        public const int ID_ROL_POR_DEFECTO = 1; // Administrador por defecto
+        public const int ID_ROL_POR_DEFECTO = 2; // Administrador por defecto
 
         public Usuario()
         {
-            UsuariosRelacion1 = new List<UsuariosRelacion>();
-            UsuariosRelacion2 = new List<UsuariosRelacion>();
             Rutas = new List<Ruta>();
             Rol = new Rol();
+            Nombre = string.Empty;
+            Contrasenia = string.Empty;
+            ContraseniaH = Array.Empty<byte>();
+            Apellidos = string.Empty;
+            NombreUsuario = string.Empty;
+            CorreoElectronico = string.Empty;
         }
 
         [Key]
@@ -18,8 +25,12 @@
         [MaxLength(50)]
         public string Nombre { get; set; }
 
-        [MaxLength(256)]
+        [MaxLength(30)]
+        [NotMapped]
         public string Contrasenia { get; set; }
+
+        [MaxLength(64)]
+        public byte[] ContraseniaH { get; set; }
 
         [Precision(9, 2)]
         public decimal KmRecorridos { get; set; }
@@ -39,7 +50,7 @@
         public virtual ICollection<UsuariosRelacion> UsuariosRelacion1 { get; set; }
         public virtual ICollection<UsuariosRelacion> UsuariosRelacion2 { get; set; }
         public virtual ICollection<Ruta> Rutas { get; set; }
-        public virtual Rol Rol { get; set; }
+        public virtual Rol? Rol { get; set; }
 
         /// <summary>
         /// Validamos que la contraseña recibida como parámetro, sea igual a la contraseña
@@ -52,9 +63,7 @@
         public bool ValidarContra(string contra, IEncriptador encriptador)
         {
             // Es necesario desencriptar la contraseña proveniente de la base de datos
-            //return encriptador.Desencriptar(Contrasenia, encriptador.Llave) == contra;
-
-            return Contrasenia == contra; // Temporal
+            return encriptador.Desencriptar(ContraseniaH, encriptador.Llave, encriptador.IV) == contra;
         }
 
         /// <summary>
@@ -74,12 +83,14 @@
         /// </summary>
         /// <param name="encriptador">Servicio de encriptación utilizado para encriptar
         /// la contraseña del usuario</param>
-        public void NormalizarDatosCreacion(IEncriptador encriptador)
+        public void NormalizarDatosCreacion(IEncriptador encriptador, DataContext ctx)
         {
             // Asignamos identificadores válidos
             //IdUsuario = Usuarios.NuevoId(Db);
             IdRol = ID_ROL_POR_DEFECTO;
+            Rol = ctx.Roles.Find(IdRol);
             KmRecorridos = 0;
+            FechaRegistro = DateTime.Now;
 
             NormalizarDatos(encriptador);
         }
@@ -93,7 +104,7 @@
         public void NormalizarDatos(IEncriptador encriptador)
         {
             // Encriptamos contraseña para su almacenamiento en BD
-            //Contrasenia = encriptador.Encriptar(Contrasenia, encriptador.Llave);
+            ContraseniaH = encriptador.Encriptar(Contrasenia, encriptador.Llave, encriptador.IV);
         }
     }
 }

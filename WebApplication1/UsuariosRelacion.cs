@@ -13,9 +13,6 @@
             IdUsuario = idUsuario;
             IdUsuarioRelacionado = idUsuarioRelacionado;
             FechaRelacion = DateTime.Now.Date;
-
-            Usuarios1 = new Usuario();
-            Usuarios2 = new Usuario();
         }
 
         [Key]

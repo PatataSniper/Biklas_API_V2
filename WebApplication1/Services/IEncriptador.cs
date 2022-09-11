@@ -2,9 +2,12 @@
 {
     public interface IEncriptador
     {
-        string Llave { get; }
+        byte[] Llave { get; }
 
-        string Encriptar(string textoPlano, string llave);
-        string Desencriptar(string textoCifr, string llave);
+        byte[] IV { get; }
+
+        byte[] Encriptar(string textoPlano, byte[] llave, byte[] IV);
+        
+        string Desencriptar(byte[] textoCifr, byte[] llave, byte[] IV);
     }
 }

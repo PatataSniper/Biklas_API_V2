@@ -15,27 +15,21 @@ namespace Biklas_API_V2
         [MaxLength(50)]
         public string Nombre { get; set; }
 
-        [Precision(9,6)]
-        public decimal? PosicionInicioX { get; set; }
-
-        [Precision(9, 6)]
-        public decimal? PosicionInicioY { get; set; }
-
-        [Precision(9, 6)]
-        public decimal? PosicionFinX { get; set; }
-
-        [Precision(9, 6)]
-        public decimal? PosicionFinY { get; set; }
+        public int IdVerticeInicial { get; set; }
         
-        public DateTimeOffset? TiempoInicio { get; set; }
-        
-        public DateTimeOffset? TiempoFin { get; set; }
+        public int IdVerticeFinal { get; set; }
+
+        public DateTime FechaCreacion { get; set; }
 
         public int IdUsuario { get; set; }
 
         public Usuario Usuario { get; set; }
 
         public virtual ICollection<Segmento> Segmentos { get; set; }
+
+        public virtual Vertice VerticeInicial { get; set; }
+        
+        public virtual Vertice VerticeFinal { get; set; }
 
         /// <summary>
         /// Devuelve el conjunto de cordenadas (x,y) que describen la ruta

@@ -90,6 +90,18 @@ namespace Biklas_API_V2.Data
                 .WithMany(u => u.Rutas)
                 .HasForeignKey(r => r.IdUsuario);
 
+            modelBuilder.Entity<Ruta>()
+                .HasOne(r => r.VerticeInicial)
+                .WithMany(v => v.RutasIniciales)
+                .OnDelete(DeleteBehavior.ClientCascade)
+                .HasForeignKey(r => r.IdVerticeInicial);
+
+            modelBuilder.Entity<Ruta>()
+                .HasOne(r => r.VerticeFinal)
+                .WithMany(v => v.RutasFinales)
+                .OnDelete(DeleteBehavior.ClientCascade)
+                .HasForeignKey(r => r.IdVerticeFinal);
+
             modelBuilder.Entity<Rol>()
                 .HasMany(r => r.AccionEntidad)
                 .WithMany(ae => ae.Roles);
