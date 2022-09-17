@@ -5,7 +5,7 @@ namespace Biklas_API_V2
 {
     public class Usuario
     {
-        public const int ID_ROL_POR_DEFECTO = 2; // Administrador por defecto
+        public const int ID_ROL_POR_DEFECTO = 1; // Administrador por defecto
 
         public Usuario()
         {

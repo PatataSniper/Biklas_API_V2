@@ -129,7 +129,7 @@ namespace Biklas_API_V2.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { err = ex.Message });
+                return Problem(ex.Message);
             }
         }
 
