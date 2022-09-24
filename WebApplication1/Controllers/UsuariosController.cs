@@ -183,7 +183,7 @@ namespace Biklas_API_V2.Controllers
             }
         }
 
-        [HttpPost("api/usuarios/recuperarcontrasenia/{correo}")]
+        [HttpPost("api/usuarios/recuperarcontrasenia")]
         public async Task<ActionResult> RecuperarContrasenia(string correo)
         {
             try
@@ -197,9 +197,12 @@ namespace Biklas_API_V2.Controllers
                     throw new Exception("El correo no pertenece a ningún usuario");
                 }
 
+                // Desencriptamos la contraseña del usuario
+                string contra = _encriptador.Desencriptar(usr.ContraseniaH, _encriptador.Llave, _encriptador.IV);
+                
                 // Enviamos correo de recuperación de contraseña al usuario
-                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico, usr.Contrasenia,
-                    Credenciales.CORREO_ELECTRONICO_COM, Credenciales.CONTRA_CORREO_ELECTRONICO_COM);
+                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico, contra,
+                    Credenciales.CORREO_ELECTRONICO_COM, Credenciales.CONTRA_CORREO_SECURE_APP);
                 return Ok(true);
             }
             catch (Exception ex)

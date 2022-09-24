@@ -13,19 +13,16 @@ namespace Biklas_API_V2.Services
 {
     public class CalculadorRuta : ICalculadorRuta
     {
-        public Itinero.Route CalcularRutaOptima(Coordinate pIni, Coordinate pEnd)
+        public Itinero.Route CalcularRutaOptima(Coordinate pIni, Coordinate pEnd, Stream mapa)
         {
             var routerDb = new RouterDb();
-            using (var stream = new FileInfo(@"D:\Documentos\Saul documentos\CUCEI\Proyectos_Modulares\Mapas\mapaAreaReducida2_01.pbf").OpenRead())
-            {
-                routerDb.LoadOsmData(stream, Vehicle.Car); 
-            }
+            routerDb.LoadOsmData(mapa, Vehicle.Bicycle);
 
             // create a router.
             var router = new Router(routerDb);
 
             // get a profile.
-            var profile = Vehicle.Car.Shortest();
+            var profile = Vehicle.Bicycle.Shortest();
 
             // create a routerpoint from a location.
             // snaps the given location to the nearest routable edge.
@@ -33,7 +30,7 @@ namespace Biklas_API_V2.Services
             RouterPoint end = router.Resolve(profile, pEnd);
 
             //var pruebaDijk = new Itinero.Algorithms.Default.Dykstra(routerDb)
-            
+
             // calculate a route.
             Itinero.Route route = router.Calculate(profile, start, end);
 

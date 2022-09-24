@@ -6,10 +6,9 @@ namespace Biklas_API_V2.Services
 {
     public class ComunicadorCorreo : IComunicadorCorreo
     {
-        IEncriptador _encriptador;
-        public ComunicadorCorreo(IEncriptador encriptador)
+        public ComunicadorCorreo()
         {
-            _encriptador = encriptador;
+            
         }
 
         public void EnviarCorreoRecuperacionContra(string emailDest,
@@ -19,7 +18,6 @@ namespace Biklas_API_V2.Services
         {
             // Preparamos dirección, contraseña y contenido del correo
             string direcc = emailDest;
-            contraDest = _encriptador.Desencriptar(Encoding.ASCII.GetBytes(contraDest), _encriptador.Llave, _encriptador.IV);
             string contCorreo = PrepContRecuperaContra(contraDest);
 
             // Preparamos correo electrónico

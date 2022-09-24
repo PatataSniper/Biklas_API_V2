@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.11.0" />
     <PackageReference Include="Itinero" Version="1.5.1" />
     <PackageReference Include="Itinero.Geo" Version="1.5.1" />
     <PackageReference Include="Itinero.IO.Osm" Version="1.5.1" />

@@ -7,11 +7,13 @@ namespace Biklas_API_V2.Controllers
     {
         private readonly DataContext _context;
         private readonly ICalculadorRuta _calculadorRuta;
+        private readonly IFileShare _fileShare;
 
-        public RutasController(DataContext context, ICalculadorRuta calculadorRuta)
+        public RutasController(DataContext context, ICalculadorRuta calculadorRuta, IFileShare fileShare)
         {
             _context = context;
             _calculadorRuta = calculadorRuta;
+            _fileShare = fileShare;
         }
 
         [HttpGet("api/Rutas/ObtenerRutasRelacionadas")]
@@ -44,8 +46,28 @@ namespace Biklas_API_V2.Controllers
         [HttpGet("api/Rutas/ObtenerRutaOptima")]
         public ActionResult<object> ObtenerRutaOptima(float xIni, float yIni, float xFin, float yFin)
         {
-            Itinero.Route ruta = _calculadorRuta.CalcularRutaOptima(new Coordinate(xIni, yIni), new Coordinate(xFin, yFin));
-            return Ok(new { shape = _calculadorRuta.ObtenerFormaRutaGMR(ruta) });
+            try
+            {
+                // Descargamos el archivo con la información del mapa en formato PBF
+                Stream? mapa = _fileShare.DescargarArchivo(Credenciales.AZ_SHARE_BIKLAS, Credenciales.AZ_FOLDER_MAPAS, 
+                    Credenciales.AZ_NOMBRE_MAPA_PRUEBA).Result;
+                
+                if(mapa == null)
+                {
+                    // No se pudo descargar el archivo, no es posible continuar
+                    throw new Exception("No se pudo descargar el mapa");
+                }
+                
+                // Realizamos el cálculo de la ruta óptima
+                Itinero.Route ruta = _calculadorRuta.CalcularRutaOptima(new Coordinate(xIni, yIni), new Coordinate(xFin, yFin), mapa);
+                mapa.Close();
+                
+                return Ok(new { shape = _calculadorRuta.ObtenerFormaRutaGMR(ruta) });
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         private bool RutasExists(int id)

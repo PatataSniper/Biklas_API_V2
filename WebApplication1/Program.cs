@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection"));
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEncriptador, Encriptador>();
 builder.Services.AddScoped<IComunicadorCorreo, ComunicadorCorreo>();
 builder.Services.AddScoped<ICalculadorRuta, CalculadorRuta>();
+builder.Services.AddScoped<IFileShare, AzureFileShare>();
 
 // Agregamos política CORS
 builder.Services.AddCors(options =>
