@@ -41,29 +41,6 @@ namespace Biklas_API_V2.Services
             smtp.Send(msg);
         }
 
-        //public void SendMail()
-        //{
-        //    // Prepare mail
-        //    MailMessage msg = new MailMessage();
-        //    SmtpClient smtp = new SmtpClient();
-        //    msg.From = new MailAddress("example@gmail.com");
-        //    msg.To.Add(new MailAddress("examplereceiver@gmail.com"));
-        //    msg.Subject = "Example subject";
-        //    msg.IsBodyHtml = true; //to make message body as html  
-        //    msg.Body = "Hi, this is the mail content";
-
-        //    // Prepare client SMTP
-        //    smtp.Port = 587;
-        //    smtp.Host = "smtp.gmail.com"; //for gmail host  
-        //    smtp.EnableSsl = true;
-        //    smtp.UseDefaultCredentials = false;
-        //    smtp.Credentials = new NetworkCredential("example@gmail.com", "passwordExample");
-        //    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-        //    // Send mail
-        //    smtp.Send(msg);
-        //}
-
         /// <summary>
         /// Prepara el contenido del correo de recuperación de contraseña
         /// </summary>

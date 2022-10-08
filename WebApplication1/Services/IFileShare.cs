@@ -2,6 +2,6 @@
 {
     public interface IFileShare
     {
-        Task<Stream?> DescargarArchivo(string nombreShare, string rutaCarpeta, string nombreArchivo);
+        Task<Stream?> DescargarArchivo(string cadenaConexion, string nombreShare, string rutaCarpeta, string nombreArchivo);
     }
 }
