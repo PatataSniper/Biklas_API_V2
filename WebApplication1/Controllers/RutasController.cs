@@ -1,4 +1,5 @@
-﻿using Itinero.LocalGeo;
+﻿using Biklas_API_V2.Helpers;
+using Itinero.LocalGeo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biklas_API_V2.Controllers
@@ -55,10 +56,10 @@ namespace Biklas_API_V2.Controllers
             {
                 // Descargamos el archivo con la información del mapa en formato PBF
                 Stream? mapa = _fileShare.DescargarArchivo(
-                    _config.GetConnectionString("AzStorageAccountConection"),
-                    _config.GetSection("ServicesCredentials")["AzBiklasShare"],
-                    _config.GetSection("ServicesCredentials")["AzMapsFolder"],
-                    _config.GetSection("ServicesCredentials")["AzMapName"]
+                    _config.GetConnectionString("AzStorageAccountConnection"),
+                    _config.GetServCredentialString("AzBiklasShare"),
+                    _config.GetServCredentialString("AzMapsFolder"),
+                    _config.GetServCredentialString("AzMapName")
                     ).Result;
                 
                 if(mapa == null)
