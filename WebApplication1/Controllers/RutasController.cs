@@ -1,4 +1,5 @@
-﻿using Itinero.LocalGeo;
+﻿using Biklas_API_V2.Helpers;
+using Itinero.LocalGeo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biklas_API_V2.Controllers
@@ -8,12 +9,17 @@ namespace Biklas_API_V2.Controllers
         private readonly DataContext _context;
         private readonly ICalculadorRuta _calculadorRuta;
         private readonly IFileShare _fileShare;
+        private readonly IConfiguration _config;
 
-        public RutasController(DataContext context, ICalculadorRuta calculadorRuta, IFileShare fileShare)
+        public RutasController(DataContext context, 
+            ICalculadorRuta calculadorRuta,
+            IFileShare fileShare, 
+            IConfiguration config)
         {
             _context = context;
             _calculadorRuta = calculadorRuta;
             _fileShare = fileShare;
+            _config = config;
         }
 
         [HttpGet("api/Rutas/ObtenerRutasRelacionadas")]
@@ -49,8 +55,12 @@ namespace Biklas_API_V2.Controllers
             try
             {
                 // Descargamos el archivo con la información del mapa en formato PBF
-                Stream? mapa = _fileShare.DescargarArchivo(Credenciales.AZ_SHARE_BIKLAS, Credenciales.AZ_FOLDER_MAPAS, 
-                    Credenciales.AZ_NOMBRE_MAPA_PRUEBA).Result;
+                Stream? mapa = _fileShare.DescargarArchivo(
+                    _config.GetConnectionString("AzStorageAccountConnection"),
+                    _config.GetServCredentialString("AzBiklasShare"),
+                    _config.GetServCredentialString("AzMapsFolder"),
+                    _config.GetServCredentialString("AzMapName")
+                    ).Result;
                 
                 if(mapa == null)
                 {

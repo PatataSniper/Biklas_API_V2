@@ -6,13 +6,18 @@ namespace Biklas_API_V2.Controllers
     {
         private readonly IComunicadorCorreo _comunicadorCorreo;
         private readonly IEncriptador _encriptador;
+        private readonly IConfiguration _config;
         private readonly DataContext _context;
 
-        public UsuariosController(DataContext context, IComunicadorCorreo comunicadorCorreo, IEncriptador encriptador)
+        public UsuariosController(DataContext context,
+            IComunicadorCorreo comunicadorCorreo,
+            IEncriptador encriptador,
+            IConfiguration config)
         {
             _context = context;
             _comunicadorCorreo = comunicadorCorreo;
             _encriptador = encriptador;
+            _config = config;
         }
 
         // GET api/<controller>
@@ -201,8 +206,13 @@ namespace Biklas_API_V2.Controllers
                 string contra = _encriptador.Desencriptar(usr.ContraseniaH, _encriptador.Llave, _encriptador.IV);
                 
                 // Enviamos correo de recuperación de contraseña al usuario
-                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico, contra,
-                    Credenciales.CORREO_ELECTRONICO_COM, Credenciales.CONTRA_CORREO_SECURE_APP);
+                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico, 
+                    contra,
+
+                    // Obtenemos el correo comunicador y su contraseña segura del objeto de configuración de
+                    // la aplicación. Parámetros configurados en el archivo appsettings.json
+                    _config.GetSection("ServicesCredentials")["EmailCom"], 
+                    _config.GetSection("ServicesCredentials")["EmailComSecureAppPassword"]);
                 return Ok(true);
             }
             catch (Exception ex)

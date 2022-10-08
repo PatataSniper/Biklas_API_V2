@@ -64,7 +64,7 @@ namespace Biklas_API_V2.Services
             // https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-6.0
             // Check arguments.
             if (textoCifrado == null || textoCifrado.Length <= 0)
-                throw new ArgumentNullException("textoCifrado");
+                return string.Empty;
             if (llave == null || llave.Length <= 0)
                 throw new ArgumentNullException("llave");
             if (IV == null || IV.Length <= 0)

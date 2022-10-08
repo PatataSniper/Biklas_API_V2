@@ -21,6 +21,11 @@ builder.Services.AddScoped<IComunicadorCorreo, ComunicadorCorreo>();
 builder.Services.AddScoped<ICalculadorRuta, CalculadorRuta>();
 builder.Services.AddScoped<IFileShare, AzureFileShare>();
 
+// Agregamos el servicio de configuración como un elemento 'singleton', para tener acceso
+// a el desde cualquier clase. Gracias a la respuesta de Henk Mollema en StackOverflow:
+// https://stackoverflow.com/questions/39231951/how-do-i-access-configuration-in-any-class-in-asp-net-core
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
 // Agregamos política CORS
 builder.Services.AddCors(options =>
 {

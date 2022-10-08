@@ -6,13 +6,10 @@ namespace Biklas_API_V2.Services
 {
     public class AzureFileShare : IFileShare
     {
-        public async Task<Stream?> DescargarArchivo(string nombreShare, string rutaCarpeta, string nombreArchivo)
+        public async Task<Stream?> DescargarArchivo(string cadenaConexion, string nombreShare, string rutaCarpeta, string nombreArchivo)
         {
             // Basado en gran medida en ejemplos de la documentación oficial
             // https://learn.microsoft.com/en-us/azure/storage/files/storage-dotnet-how-to-use-files?tabs=dotnet
-
-            // Obtenemos cadena de conexión a la cuenta de almacenamiento
-            string cadenaConexion = Credenciales.AZ_CONEXION_CUENTA_ALMACEN;
 
             // Instantiate a ShareClient which will be used to create and manipulate the file share
             ShareClient share = new ShareClient(cadenaConexion, nombreShare);
