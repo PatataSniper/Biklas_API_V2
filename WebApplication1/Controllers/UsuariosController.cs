@@ -99,7 +99,7 @@ namespace Biklas_API_V2.Controllers
                     }
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new { err = ex.Message });
             }
@@ -107,7 +107,7 @@ namespace Biklas_API_V2.Controllers
 
         // POST api/<controller>
         [HttpPost("api/usuarios")]
-        public async Task<ActionResult> Post([FromBody]Usuario nuevoUsuario)
+        public async Task<ActionResult> Post([FromBody] Usuario nuevoUsuario)
         {
             try
             {
@@ -157,30 +157,25 @@ namespace Biklas_API_V2.Controllers
                 Usuario? usuario = await _context.Usuarios
                     .FirstOrDefaultAsync(u => u.NombreUsuario == identificador || u.CorreoElectronico == identificador);
 
-                if (usuario == null) throw new Exception("Usuario no existe en la base de datos");
+                // Validamos usuario y contraseña válidos
+                if (usuario == null) return Ok(new { err = "Usuario no encontrado" });
+                if (!usuario.ValidarContra(contra, _encriptador)) return Ok(new { err = "Contraseña incorrecta" });
 
-                // El usuario existe, validamos la contraseña
-                if (usuario.ValidarContra(contra, _encriptador))
+                // Contraseña válida, éxito en el inicio de sesión, devolvemos información del usuario
+                return Ok(new
                 {
-                    // Contraseña válida, éxito en el inicio de sesión, devolvemos información del usuario
-                    return Ok(new
+                    user = new
                     {
-                        user = new
-                        {
-                            usuario.IdUsuario,
-                            usuario.Nombre,
-                            usuario.Apellidos,
-                            usuario.NombreUsuario,
-                            usuario.Contrasenia,
-                            usuario.CorreoElectronico,
-                            usuario.IdRol
-                        },
-                        auth_token = "1" // Token de prueba
-                    });
-                }
-
-                // Contraseña inválida, fallo en el inicio de sesión
-                throw new Exception("Contraseña incorrecta");
+                        usuario.IdUsuario,
+                        usuario.Nombre,
+                        usuario.Apellidos,
+                        usuario.NombreUsuario,
+                        usuario.Contrasenia,
+                        usuario.CorreoElectronico,
+                        usuario.IdRol
+                    },
+                    auth_token = "1" // Token de prueba
+                });
             }
             catch (Exception ex)
             {
@@ -199,19 +194,19 @@ namespace Biklas_API_V2.Controllers
                 if (usr == null)
                 {
                     // Correo no relacionado a ningún usuario en la base de datos
-                    throw new Exception("El correo no pertenece a ningún usuario");
+                    return Ok(new { err = "El correo no pertenece a ningún usuario" });
                 }
 
                 // Desencriptamos la contraseña del usuario
                 string contra = _encriptador.Desencriptar(usr.ContraseniaH, _encriptador.Llave, _encriptador.IV);
-                
+
                 // Enviamos correo de recuperación de contraseña al usuario
-                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico, 
+                _comunicadorCorreo.EnviarCorreoRecuperacionContra(usr.CorreoElectronico,
                     contra,
 
                     // Obtenemos el correo comunicador y su contraseña segura del objeto de configuración de
                     // la aplicación. Parámetros configurados en el archivo appsettings.json
-                    _config.GetSection("ServicesCredentials")["EmailCom"], 
+                    _config.GetSection("ServicesCredentials")["EmailCom"],
                     _config.GetSection("ServicesCredentials")["EmailComSecureAppPassword"]);
                 return Ok(true);
             }
