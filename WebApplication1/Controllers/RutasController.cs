@@ -11,9 +11,9 @@ namespace Biklas_API_V2.Controllers
         private readonly IFileShare _fileShare;
         private readonly IConfiguration _config;
 
-        public RutasController(DataContext context, 
+        public RutasController(DataContext context,
             ICalculadorRuta calculadorRuta,
-            IFileShare fileShare, 
+            IFileShare fileShare,
             IConfiguration config)
         {
             _context = context;
@@ -52,31 +52,40 @@ namespace Biklas_API_V2.Controllers
         [HttpGet("api/Rutas/ObtenerRutaOptima")]
         public ActionResult<object> ObtenerRutaOptima(float xIni, float yIni, float xFin, float yFin)
         {
+            Stream? mapa = new MemoryStream();
             try
             {
                 // Descargamos el archivo con la información del mapa en formato PBF
-                Stream? mapa = _fileShare.DescargarArchivo(
+                mapa = _fileShare.DescargarArchivo(
                     _config.GetConnectionString("AzStorageAccountConnection"),
                     _config.GetServCredentialString("AzBiklasShare"),
                     _config.GetServCredentialString("AzMapsFolder"),
                     _config.GetServCredentialString("AzMapName")
                     ).Result;
-                
-                if(mapa == null)
+
+                if (mapa == null)
                 {
                     // No se pudo descargar el archivo, no es posible continuar
                     throw new Exception("No se pudo descargar el mapa");
                 }
-                
+
                 // Realizamos el cálculo de la ruta óptima
-                Itinero.Route ruta = _calculadorRuta.CalcularRutaOptima(new Coordinate(xIni, yIni), new Coordinate(xFin, yFin), mapa);
-                mapa.Close();
-                
+                Itinero.Route ruta = _calculadorRuta.CalcularRutaOptima(
+                    new Coordinate(xIni, yIni), 
+                    new Coordinate(xFin, yFin), mapa
+                    );
+
                 return Ok(new { shape = _calculadorRuta.ObtenerFormaRutaGMR(ruta) });
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Ok(new { err = ex.Message });
+            }
+            finally
+            {
+                // Nos aseguramos de cerrar siempre stream del mapa, para evitar bloquar
+                // el servicio.
+                mapa?.Close();
             }
         }
 
