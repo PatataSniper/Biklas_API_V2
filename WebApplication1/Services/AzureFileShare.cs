@@ -47,6 +47,7 @@ namespace Biklas_API_V2.Services
             FileStream stream = File.OpenWrite("mapaTemp.pbf");
             await download.Content.CopyToAsync(stream);
             await stream.FlushAsync();
+            stream.SetLength(stream.Position);
             stream.Close();
 
             // Retornamos el stream del archivo
