@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../Itinero.Common.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Itinero.IO.Osm</AssemblyName>
+    <PackageId>Itinero.IO.Osm</PackageId>
+    <LangVersion>default</LangVersion>
+    <Title>Itinero.IO.Osm</Title>
+    <Description>Itinero.IO.Osm - OpenStreetMap data IO.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Itinero\Itinero.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OsmSharp" Version="7.0.0-pre018" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Profiles\Defaults\*.lua" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+</Project>

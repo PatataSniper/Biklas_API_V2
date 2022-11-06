@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using OsmSharp.Streams;
-using OsmSharp;
 using System.Windows;
 using Itinero;
-using Itinero.Osm.Vehicles;
-using Itinero.IO.Osm;
 using Itinero.LocalGeo;
+using Itinero.IO.Osm;
+using Itinero.Osm.Vehicles;
 
 namespace Biklas_API_V2.Services
 {
